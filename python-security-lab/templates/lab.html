@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block content %}
+<a class="back" href="{{ url_for('index') }}">← На главную</a>
+<div class="page-heading">
+  {% if mode == "vulnerable" %}
+    <span class="status red">VULNERABLE MODE</span>
+    <h1>Уязвимая версия</h1>
+    <p>Здесь намеренно оставлены две учебные ошибки. Используй только локальные демонстрационные данные.</p>
+  {% else %}
+    <span class="status green">PATCHED MODE</span>
+    <h1>Исправленная версия</h1>
+    <p>Здесь применены параметризованные SQL-запросы и проверка прав доступа на сервере.</p>
+  {% endif %}
+</div>
+
+<div class="two-col">
+  <section class="panel">
+    <h2>1. Авторизация</h2>
+    <p class="muted">Тестовые учётные записи: <code>alice / alice123</code> и <code>bob / bob123</code>.</p>
+    <form method="post" action="{{ url_for('login', mode=mode) }}">
+      <label>Имя пользователя<input name="username" autocomplete="off" required></label>
+      <label>Пароль<input name="password" type="password" required></label>
+      <button type="submit">Войти</button>
+    </form>
+    <form method="post" action="{{ url_for('logout', mode=mode) }}">
+      <button class="secondary" type="submit">Выйти</button>
+    </form>
+  </section>
+  <section class="panel">
+    <h2>2. Просмотр профиля</h2>
+    <p class="muted">ID Alice — 1. ID Bob — 2.</p>
+    <div class="profile-links">
+      <a href="{{ url_for('profile', mode=mode, user_id=1) }}" target="_blank">Открыть профиль Alice (ID 1) ↗</a>
+      <a href="{{ url_for('profile', mode=mode, user_id=2) }}" target="_blank">Открыть профиль Bob (ID 2) ↗</a>
+    </div>
+    <p class="hint">
+      {% if mode == "vulnerable" %}
+      В уязвимой версии сервер не сверяет ID запрашиваемого профиля с текущим пользователем.
+      {% else %}
+      В исправленной версии доступны только профиль текущего авторизованного пользователя.
+      {% endif %}
+    </p>
+  </section>
+</div>
+
+<section class="panel explanation">
+  <h2>Что сравниваем</h2>
+  {% if mode == "vulnerable" %}
+  <ul>
+    <li><strong>SQL Injection:</strong> значения формы напрямую вставляются в SQL-строку.</li>
+    <li><strong>IDOR:</strong> просмотр профиля не требует авторизации и проверки владельца.</li>
+  </ul>
+  {% else %}
+  <ul>
+    <li><strong>SQL Injection:</strong> запрос использует placeholders <code>?</code> и отдельные параметры.</li>
+    <li><strong>IDOR:</strong> сервер требует сессию и проверяет совпадение ID с ID пользователя в сессии.</li>
+  </ul>
+  {% endif %}
+</section>
+{% endblock %}

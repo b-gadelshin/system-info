@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="hero">
+  <div class="eyebrow">WEB APPLICATION SECURITY · TRAINING</div>
+  <h1>Изучаем уязвимости<br><span>на безопасном стенде</span></h1>
+  <p class="lead">Две демонстрации OWASP Top 10: SQL Injection и Broken Access Control (IDOR). Сравни уязвимую реализацию с исправленной.</p>
+  <div class="cards">
+    <a class="card vulnerable" href="{{ url_for('lab', mode='vulnerable') }}">
+      <span class="status red">VULNERABLE</span>
+      <h2>Уязвимая версия</h2>
+      <p>Посмотри, к чему приводит небезопасная обработка запросов и отсутствие проверки доступа.</p>
+      <span class="card-link">Открыть лабораторию →</span>
+    </a>
+    <a class="card patched" href="{{ url_for('lab', mode='patched') }}">
+      <span class="status green">PATCHED</span>
+      <h2>Исправленная версия</h2>
+      <p>Проверь параметризованные SQL-запросы и серверную проверку владельца профиля.</p>
+      <span class="card-link">Открыть исправленную →</span>
+    </a>
+  </div>
+</section>
+<section class="info-grid">
+  <div><strong>A03: Injection</strong><p>SQL Injection в форме входа.</p></div>
+  <div><strong>A01: Broken Access Control</strong><p>IDOR при просмотре профиля другого пользователя.</p></div>
+  <div><strong>Тестовые аккаунты</strong><p><code>alice / alice123</code><br><code>bob / bob123</code></p></div>
+</section>
+{% endblock %}
